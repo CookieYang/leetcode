@@ -1,6 +1,5 @@
 #pragma once
-#include <vector>
-#include <algorithm>
+#include "public.h"
 using namespace std;
 
 class Solution {
@@ -54,24 +53,40 @@ public:
 };
 
 class Solution2 {
-public:
-	int countArrangement(int N) {
-		vector<int> A(N);
-		int i = 1;
-		for_each(A.begin(), A.end(), [&](int &a) { a = i++; });
-		return backtrack(N, A);
+	int  counter(vector<int> &nums, int n)
+	{
+		if (0 >= n)
+		{
+			return 1;
+		}
+
+		int cnt = 0;
+		for (int pos = 0; pos<n; pos++)
+		{
+			if ((0 == nums[pos] % n) || (0 == n % nums[pos]))
+			{
+				//cout<<"idx: "<<idx<<" nums[idx-1]: "<<nums[idx-1]<<" nums[pos]: "<<nums[pos]<<endl;
+				swap(nums[pos], nums[n - 1]);
+				cnt += counter(nums, n - 1);
+				swap(nums[pos], nums[n - 1]);
+			}
+		}
+
+		return cnt;
 	}
 
-	int backtrack(int N, vector<int>&A) {
-		if (N == 0) return 1;
+public:
+	int countArrangement(int N) {
+		vector<int> nums;
 		int cnt = 0;
-		for (int i = 0; i<N; i++)
-			if (A[i] % N == 0 || N % A[i] == 0)
-			{
-				swap(A[i], A[N - 1]);
-				cnt += backtrack(N - 1, A);
-				swap(A[i], A[N - 1]);
-			}
+
+		for (int n = 1; n <= N; n++)
+		{
+			nums.push_back(n);
+		}
+
+		cnt = counter(nums, N);
+
 		return cnt;
 	}
 };
